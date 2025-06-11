@@ -1,3 +1,12 @@
-export default function Home() {
-  return <h1>Hello From Home</h1>;
-}
+import React from "react";
+import TopicsList from "@/components/home/TopicsList";
+
+const page = () => {
+  return (
+    <div className="min-h-screen mt-3">
+      <TopicsList />
+    </div>
+  );
+};
+
+export default page;
