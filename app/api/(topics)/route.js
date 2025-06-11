@@ -1,5 +1,3 @@
-// CRUD
-
 import ConnectionDB from "@/lib/connection";
 import Topic from "@/models/topics";
 import { NextResponse } from "next/server";
@@ -115,6 +113,7 @@ export async function DELETE(request) {
   }
 }
 
+//Put :
 export async function PUT(request) {
   try {
     await ConnectionDB();
