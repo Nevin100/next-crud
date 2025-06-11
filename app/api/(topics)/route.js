@@ -1,4 +1,5 @@
-// app/api/topics/route.ts or route.js depending on your setup
+// CRUD
+
 import ConnectionDB from "@/lib/connection";
 import Topic from "@/models/topics";
 import { NextResponse } from "next/server";
