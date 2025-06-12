@@ -43,7 +43,7 @@ const TopicsList = () => {
 
           <div className="flex gap-2">
             <RemoveButton />
-            <Link href={`/edit-topic?id=${topic._id}`}>
+            <Link href={`/edit-topic/${topic._id}`}>
               <HiPencilAlt
                 size={24}
                 className="text-semibold text-green-500 cursor-pointer"

@@ -2,38 +2,41 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import Swal from "sweetalert2";
 
-const EditForm = ({}) => {
+const EditForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id"); // e.g., /edit-topic?id=123
+  const { id } = useParams();
 
-  // Fetch the existing topic
   useEffect(() => {
+    if (!id) return;
+
     const fetchTopic = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api?id=${id}`);
+        const res = await axios.get(`http://localhost:3000/api/${id}`);
+        console.log("GET BY ID : ", res);
         const data = res.data.data;
         setTitle(data.title);
         setDescription(data.description);
       } catch (err) {
-        console.log("Fetch Error", err);
+        console.error("Fetch Error:", err);
+        setError("Failed to load topic.");
       }
     };
 
-    if (id) fetchTopic();
+    fetchTopic();
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !description) {
+    if (!title.trim() || !description.trim()) {
       setError("Title and Description are required.");
       return;
     }
@@ -42,16 +45,28 @@ const EditForm = ({}) => {
     setLoading(true);
 
     try {
-      const res = await axios.put(`http://localhost:3000/api?id=${id}`, {
+      const res = await axios.put(`http://localhost:3000/api/${id}`, {
         title,
         description,
       });
 
       if (res.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Topic Updated Successfully",
+          position: "top",
+        });
         router.push("/");
+      } else {
+        setError("Failed to update topic.");
       }
     } catch (err) {
-      console.log("Update Error", err);
+      console.error("Update Error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Topic Updation Unsuccessful",
+        position: "top",
+      });
       setError("Failed to update topic.");
     } finally {
       setLoading(false);

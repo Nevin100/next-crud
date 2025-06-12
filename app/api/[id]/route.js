@@ -5,11 +5,12 @@ import Topic from "@/models/topics";
 export async function PUT(request, { params }) {
   try {
     await ConnectionDB();
+
     const { id } = params;
     if (!id) {
       return NextResponse.json(
         { error: true, message: "No ID Provided" },
-        { status: 401 }
+        { status: 400 }
       );
     }
 
@@ -18,31 +19,66 @@ export async function PUT(request, { params }) {
 
     if (!title && !description) {
       return NextResponse.json(
-        { message: "No Change Provided", error: true },
-        { status: 401 }
+        { error: true, message: "No changes provided" },
+        { status: 400 }
       );
     }
 
     const topic = await Topic.findById(id);
     if (!topic) {
       return NextResponse.json(
-        { message: "No Such Topic exist", error: true },
-        { status: 401 }
+        { error: true, message: "Topic not found" },
+        { status: 404 }
       );
     }
 
-    topic.description = description;
-    topic.title = title;
+    // Update only provided fields
+    if (title) topic.title = title;
+    if (description) topic.description = description;
 
     await topic.save();
+
     return NextResponse.json(
-      { message: "Topic Updated Successfully", error: false },
+      { error: false, message: "Topic updated successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
+    console.error("PUT /api/topic error:", error);
     return NextResponse.json(
-      { error: true, message: "Internal Server Issue" },
+      { error: true, message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request, { params }) {
+  try {
+    await ConnectionDB();
+
+    const { id } = params;
+    if (!id) {
+      return NextResponse.json(
+        { error: true, message: "No ID Provided" },
+        { status: 400 }
+      );
+    }
+
+    const topic = await Topic.findById(id);
+    if (!topic) {
+      return NextResponse.json(
+        { error: true, message: "Topic not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: false, message: "Topic retrieved successfully", data: topic },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("GET /api/topic error:", error);
+    return NextResponse.json(
+      { error: true, message: "Internal Server Error" },
       { status: 500 }
     );
   }
