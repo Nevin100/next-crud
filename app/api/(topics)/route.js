@@ -42,32 +42,15 @@ export async function GET(request) {
   try {
     await ConnectionDB();
 
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-    if (!id) {
-      const topics = await Topic.find();
-      if (!topics || topics.length == 0) {
-        return NextResponse.json({ error: "No topics Exist" }, { status: 500 });
-      }
-
-      return NextResponse.json(
-        { message: "Topics Fetched Successully", data: topics, error: false },
-        { status: 200 }
-      );
-    } else {
-      const topic = await Topic.findById(id);
-      if (!topic) {
-        return NextResponse.json(
-          { message: "No Such Topic exists", error: true },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json(
-        { message: "Topic Retieved Successfully", error: false, data: topic },
-        { status: 200 }
-      );
+    const topics = await Topic.find();
+    if (!topics || topics.length == 0) {
+      return NextResponse.json({ error: "No topics Exist" }, { status: 500 });
     }
+
+    return NextResponse.json(
+      { message: "Topics Fetched Successully", data: topics, error: false },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -113,56 +96,56 @@ export async function DELETE(request) {
   }
 }
 
-//Put :
-export async function PUT(request) {
-  try {
-    await ConnectionDB();
+//Put :(on emore way )
+// export async function PUT(request) {
+//   try {
+//     await ConnectionDB();
 
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+//     const { searchParams } = new URL(request.url);
+//     const id = searchParams.get("id");
 
-    if (!id) {
-      return NextResponse.json(
-        { message: "No Id recieved", error: true },
-        { status: 500 }
-      );
-    }
+//     if (!id) {
+//       return NextResponse.json(
+//         { message: "No Id recieved", error: true },
+//         { status: 500 }
+//       );
+//     }
 
-    if (id) {
-      const body = await request.json();
-      const { title, description } = body;
+//     if (id) {
+//       const body = await request.json();
+//       const { title, description } = body;
 
-      if (!title && !description) {
-        return NextResponse.json(
-          { message: "No Change Provided", error: true },
-          { status: 500 }
-        );
-      }
+//       if (!title && !description) {
+//         return NextResponse.json(
+//           { message: "No Change Provided", error: true },
+//           { status: 500 }
+//         );
+//       }
 
-      const updateTopic = await Topic.findById(id);
-      if (!updateTopic) {
-        return NextResponse.json(
-          { message: "No Such topic exists", error: true },
-          { status: 500 }
-        );
-      }
+//       const updateTopic = await Topic.findById(id);
+//       if (!updateTopic) {
+//         return NextResponse.json(
+//           { message: "No Such topic exists", error: true },
+//           { status: 500 }
+//         );
+//       }
 
-      updateTopic.title = title;
+//       updateTopic.title = title;
 
-      updateTopic.description = description;
+//       updateTopic.description = description;
 
-      await updateTopic.save();
+//       await updateTopic.save();
 
-      return NextResponse.json(
-        { message: "Updated Successfully", error: false, data: updateTopic },
-        { status: 200 }
-      );
-    }
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { message: "Internal Server Issue", error: true },
-      { status: 500 }
-    );
-  }
-}
+//       return NextResponse.json(
+//         { message: "Updated Successfully", error: false, data: updateTopic },
+//         { status: 200 }
+//       );
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return NextResponse.json(
+//       { message: "Internal Server Issue", error: true },
+//       { status: 500 }
+//     );
+//   }
+// }
