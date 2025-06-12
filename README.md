@@ -47,6 +47,9 @@ All four horsemen of Fullstack Doom.
 | Tailwind CSS | Fastest CSS alive ⚡️ |
 
 ---
+## Screenshot 📷:
+![image](https://github.com/user-attachments/assets/43370fa7-ab84-4391-854a-19f08721ec34)
+
 
 ## 🚀 Getting Started
 
