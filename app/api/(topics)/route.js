@@ -60,42 +60,6 @@ export async function GET(request) {
   }
 }
 
-//Delete :
-export async function DELETE(request) {
-  try {
-    await ConnectionDB();
-
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json(
-        { message: "No Id recieved", error: true },
-        { status: 500 }
-      );
-    }
-
-    const deletedtopic = await Topic.findByIdAndDelete(id);
-    if (!deletedtopic) {
-      return NextResponse.json(
-        { message: "No such Topic exists", error: true },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(
-      { message: "Topic deleted Successfully", error: false },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      { message: "Internal Server Issue", error: error },
-      { status: 500 }
-    );
-  }
-}
-
 //Put :(on emore way )
 // export async function PUT(request) {
 //   try {

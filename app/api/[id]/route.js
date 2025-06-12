@@ -83,3 +83,38 @@ export async function GET(request, { params }) {
     );
   }
 }
+
+//Delete :
+export async function DELETE(request, { params }) {
+  try {
+    await ConnectionDB();
+
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "No Id recieved", error: true },
+        { status: 500 }
+      );
+    }
+
+    const deletedtopic = await Topic.findByIdAndDelete(id);
+    if (!deletedtopic) {
+      return NextResponse.json(
+        { message: "No such Topic exists", error: true },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Topic deleted Successfully", error: false },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { message: "Internal Server Issue", error: error },
+      { status: 500 }
+    );
+  }
+}

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import RemoveButton from "@/components/RemoveButton";
 import { HiPencilAlt } from "react-icons/hi";
 import Link from "next/link";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { HiOutlineTrash } from "react-icons/hi";
 
 const TopicsList = () => {
   const [topics, setTopics] = useState([]);
@@ -24,6 +25,41 @@ const TopicsList = () => {
     getTopics();
   }, []);
 
+  const deleteTopic = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This topic will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(`http://localhost:3000/api/${id}`);
+        if (response.status === 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Successfully Deleted",
+            position: "top",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+          getTopics(); // Refresh list
+        }
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Internal Server Issue",
+          position: "top",
+        });
+      }
+    }
+  };
+
   return (
     <>
       <h1 className="text-3xl font-bold text-center text-slate-700 px-2 py-4">
@@ -42,7 +78,12 @@ const TopicsList = () => {
           </div>
 
           <div className="flex gap-2">
-            <RemoveButton />
+            <button
+              className="text-red-500 text-semibold cursor-pointer"
+              onClick={() => deleteTopic(topic._id)}
+            >
+              <HiOutlineTrash size={24} />
+            </button>
             <Link href={`/edit-topic/${topic._id}`}>
               <HiPencilAlt
                 size={24}
